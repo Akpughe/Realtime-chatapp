@@ -108,6 +108,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var pusher_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pusher-js */ "pusher-js");
 /* harmony import */ var pusher_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(pusher_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ChatMessage */ "./components/ChatMessage.js");
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -115,6 +116,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
+const SAD_EMOJI = [55357, 56864];
+const HAPPY_EMOJI = [55357, 56832];
+const NEUTRAL_EMOJI = [55357, 56848];
 
 class Chat extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor(...args) {
@@ -181,7 +186,37 @@ class Chat extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       }
     }, __jsx("h2", {
       className: "text-dark mb-0 mx-4 px-2"
-    }, this.props.activeUser)), __jsx("div", {
+    }, this.props.activeUser)), "// Chat Message here", __jsx("div", {
+      className: "px-4 pb-4 w-100 d-flex flex-row flex-wrap align-items-start align-content-start position-relative",
+      style: {
+        height: 'calc(100% - 180px)',
+        overflowY: 'scroll'
+      }
+    }, this.state.chats.map((chat, index) => {
+      const previous = Math.max(0, index - 1);
+      const previousChat = this.state.chats[previous];
+      const position = chat.user === this.props.activeUser ? 'right' : 'left';
+      const isFirst = previous === index;
+      const inSequence = chat.user === previousChat.user;
+      const hasDelay = Math.ceil((chat.timestamp - previousChat.timestamp) / (1000 * 60)) > 1;
+      const mood = chat.sentiment > 0 ? HAPPY_EMOJI : chat.sentiment === 0 ? NEUTRAL_EMOJI : SAD_EMOJI;
+      return __jsx(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], {
+        key: index
+      }, (isFirst || !inSequence || hasDelay) && __jsx("div", {
+        className: `d-block w-100 font-weight-bold text-dark mt-4 pb-1 px-1 text-${position}`,
+        style: {
+          fontSize: '0.9rem'
+        }
+      }, __jsx("span", {
+        className: "d-block",
+        style: {
+          fontSize: '1.6rem'
+        }
+      }, String.fromCodePoint(...mood)), __jsx("span", null, chat.user || 'Anonymous')), __jsx(_ChatMessage__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        message: chat.message,
+        position: position
+      }));
+    })), "//----//", __jsx("div", {
       className: "border-top border-gray w-100 px-4 d-flex align-items-center bg-light",
       style: {
         minHeight: 90
@@ -199,6 +234,55 @@ class Chat extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Chat);
+
+/***/ }),
+
+/***/ "./components/ChatMessage.js":
+/*!***********************************!*\
+  !*** ./components/ChatMessage.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
+
+class ChatMessage extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+  render() {
+    const {
+      position = 'left',
+      message
+    } = this.props;
+    const isRight = position.toLowerCase() === 'right';
+    const align = isRight ? 'text-right' : 'text-left';
+    const justify = isRight ? 'justify-content-end' : 'justify-content-start';
+    const messageBoxStyles = {
+      maxWidth: '70%',
+      flexGrow: 0
+    };
+    const messageStyles = {
+      fontWeight: 500,
+      lineHeight: 1.4,
+      whiteSpace: 'pre-wrap'
+    };
+    return __jsx("div", {
+      className: `w-100 my-1 d-flex ${justify}`
+    }, __jsx("div", {
+      className: "bg-light rounded border border-gray p-2",
+      style: messageBoxStyles
+    }, __jsx("span", {
+      className: `d-block text-secondary ${align}`,
+      style: messageStyles
+    }, message)));
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (ChatMessage);
 
 /***/ }),
 
