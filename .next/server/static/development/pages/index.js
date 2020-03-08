@@ -93,6 +93,115 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
+/***/ "./components/Chat.js":
+/*!****************************!*\
+  !*** ./components/Chat.js ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "axios");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var pusher_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pusher-js */ "pusher-js");
+/* harmony import */ var pusher_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(pusher_js__WEBPACK_IMPORTED_MODULE_2__);
+var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+class Chat extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "state", {
+      chats: []
+    });
+
+    _defineProperty(this, "handleKeyUp", evt => {
+      const value = evt.target.value;
+
+      if (evt.keyCode === 13 && !evt.shiftKey) {
+        const {
+          activeUser: user
+        } = this.props;
+        const chat = {
+          user,
+          message: value,
+          timestamp: +new Date()
+        };
+        evt.target.value = '';
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/message', chat);
+      }
+    });
+  }
+
+  componentDidMount() {
+    this.pusher = new pusher_js__WEBPACK_IMPORTED_MODULE_2___default.a("bb256a5cda7abe32a566", {
+      cluster: "eu",
+      encrypted: true
+    });
+    this.channel = this.pusher.subscribe('chat-room');
+    this.channel.bind('new-message', ({
+      chat = null
+    }) => {
+      const {
+        chats
+      } = this.state;
+      chat && chats.push(chat);
+      this.setState({
+        chats
+      });
+    });
+    this.pusher.connection.bind('connected', () => {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/messages').then(response => {
+        const chats = response.data.messages;
+        this.setState({
+          chats
+        });
+      });
+    });
+  }
+
+  componentWillUnmount() {
+    this.pusher.disconnect();
+  }
+
+  render() {
+    return this.props.activeUser && __jsx(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, __jsx("div", {
+      className: "border-bottom border-gray w-100 d-flex align-items-center bg-white",
+      style: {
+        height: 90
+      }
+    }, __jsx("h2", {
+      className: "text-dark mb-0 mx-4 px-2"
+    }, this.props.activeUser)), __jsx("div", {
+      className: "border-top border-gray w-100 px-4 d-flex align-items-center bg-light",
+      style: {
+        minHeight: 90
+      }
+    }, __jsx("textarea", {
+      className: "form-control px-3 py-2",
+      onKeyUp: this.handleKeyUp,
+      placeholder: "Enter a chat message",
+      style: {
+        resize: 'none'
+      }
+    })));
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Chat);
+
+/***/ }),
+
 /***/ "./components/Layout.js":
 /*!******************************!*\
   !*** ./components/Layout.js ***!
@@ -138,9 +247,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _components_Layout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Layout */ "./components/Layout.js");
+/* harmony import */ var _components_Chat__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Chat */ "./components/Chat.js");
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -204,7 +315,9 @@ class IndexPage extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       style: nameInputStyles
     }))), __jsx("section", {
       className: "col-md-4 position-relative d-flex flex-wrap h-100 align-items-start align-content-between bg-white px-0"
-    }))));
+    }, user && __jsx(_components_Chat__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      activeUser: user
+    })))));
   }
 
 }
@@ -225,6 +338,17 @@ module.exports = __webpack_require__(/*! C:\Users\DAVID\Documents\realtime-chat-
 
 /***/ }),
 
+/***/ "axios":
+/*!************************!*\
+  !*** external "axios" ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("axios");
+
+/***/ }),
+
 /***/ "next/head":
 /*!****************************!*\
   !*** external "next/head" ***!
@@ -233,6 +357,17 @@ module.exports = __webpack_require__(/*! C:\Users\DAVID\Documents\realtime-chat-
 /***/ (function(module, exports) {
 
 module.exports = require("next/head");
+
+/***/ }),
+
+/***/ "pusher-js":
+/*!****************************!*\
+  !*** external "pusher-js" ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("pusher-js");
 
 /***/ }),
 
