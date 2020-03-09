@@ -61,7 +61,7 @@ class Chat extends Component {
               {this.props.activeUser}
             </h2>
           </div>
-          // Chat Message here
+          {/* Chat Message here */}
           <div
             className="px-4 pb-4 w-100 d-flex flex-row flex-wrap align-items-start align-content-start position-relative"
             style={{ height: 'calc(100% - 180px)', overflowY: 'scroll' }}
@@ -105,7 +105,7 @@ class Chat extends Component {
               );
             })}
           </div>
-          //----//
+          {/* //----// */}
           <div
             className="border-top border-gray w-100 px-4 d-flex align-items-center bg-light"
             style={{ minHeight: 90 }}

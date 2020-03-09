@@ -129,7 +129,7 @@ var Chat = /*#__PURE__*/function (_Component) {
         }
       }, __jsx("h2", {
         className: "text-dark mb-0 mx-4 px-2"
-      }, this.props.activeUser)), "// Chat Message here", __jsx("div", {
+      }, this.props.activeUser)), __jsx("div", {
         className: "px-4 pb-4 w-100 d-flex flex-row flex-wrap align-items-start align-content-start position-relative",
         style: {
           height: 'calc(100% - 180px)',
@@ -159,7 +159,7 @@ var Chat = /*#__PURE__*/function (_Component) {
           message: chat.message,
           position: position
         }));
-      })), "//----//", __jsx("div", {
+      })), __jsx("div", {
         className: "border-top border-gray w-100 px-4 d-flex align-items-center bg-light",
         style: {
           minHeight: 90
